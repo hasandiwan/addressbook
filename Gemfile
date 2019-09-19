@@ -35,3 +35,6 @@ gem 'RubyInline'
 gem 'figaro'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 gem "validate_url"
+gem 'capybara'
+gem 'selenium-webdriver'
+gem 'webdrivers'
