@@ -9,6 +9,8 @@ class MainController < ApplicationController
 
   def users
     @user = User.pluck(:email)
-    return @user.to_json
+    ret = "\n"
+    @user.each { |u| ret = "#{ret}\n#{u}" }
+    @user
   end
 end

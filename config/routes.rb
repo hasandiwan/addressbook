@@ -22,6 +22,8 @@ Addressbook::Application.routes.draw do
   get 'use_desktop_view' => 'main#use_desktop_view'
   get 'use_mobile_view' => 'main#use_mobile_view'
 
+  get 'users' => 'main#users'
+
   root :to => 'main#index'
 end
 
