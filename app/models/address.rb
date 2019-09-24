@@ -93,7 +93,7 @@ class Address < ActiveRecord::Base
   end
 
   def only_has_one_contact?
-    self.contacts(true).size == 1
+    self.contacts.size == 1
   end
 
   private

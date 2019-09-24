@@ -69,7 +69,8 @@ class ContactTest < ActiveSupport::TestCase
 
       old_address_id = addresses(:chicago).id
       assert_equal old_address_id, contact.remove_address
-      assert !addresses(:chicago).contacts(true).include?(contact)
+      addresses(:chicago).contacts.reload
+      assert !addresses(:chicago).contacts().include?(contact)
     end
   end
 

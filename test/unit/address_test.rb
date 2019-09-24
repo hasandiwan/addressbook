@@ -134,9 +134,10 @@ class AddressTest < ActiveSupport::TestCase
       group.addresses = [address]
       group.save!
 
-      assert group.addresses(true).include?(address)
+      group.reload
+      assert group.addresses().include?(address)
       address.destroy
-      assert !group.addresses(true).include?(address)
+      assert !group.addresses().include?(address)
     end
 
     it "should not be able to update an address with an invalid phone number" do
