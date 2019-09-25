@@ -74,7 +74,7 @@ class GroupsControllerTest < ActionController::TestCase
       group.addresses << [ addresses(:chicago), addresses(:tinley_park), addresses(:alsip) ]
       group.save
 
-      get :create_labels, :id => group, :label_type => 'Avery8660'
+      get :create_labels, parms: { :id => group, :label_type => 'Avery8660' }
     end
 
     it("should respond with success") { assert_response :success }

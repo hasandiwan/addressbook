@@ -13,7 +13,7 @@ class ContactsControllerTest < ActionController::TestCase
   describe "on GET to :show from a mobile device" do
     setup do
       @request.user_agent = "android"
-      get :show, :id => contacts(:john_doe)
+      get :show, params: { :id => contacts(:john_doe) }
     end
 
     it("should respond with success") { assert_response :success }
