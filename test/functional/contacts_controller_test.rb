@@ -4,7 +4,7 @@ class ContactsControllerTest < ActionController::TestCase
   tests ContactsController
 
   describe "on GET to :new" do
-    setup { xhr :get, :new }
+    setup { get :new, xhr: true }
 
     it("should respond with success") { assert_response :success }
     it("should render the proper template") { assert_template :edit_contact }
@@ -22,7 +22,7 @@ class ContactsControllerTest < ActionController::TestCase
   end
 
   describe "on GET to :show from a standard web browser" do
-    setup { xhr :get, :show, :id => contacts(:john_doe) }
+    setup { get :show, xhr: true, params: {:id => contacts(:john_doe) } }
 
     it("should respond with success") { assert_response :success }
     it("should render the proper template") { assert_template :edit_contact }
@@ -33,7 +33,7 @@ class ContactsControllerTest < ActionController::TestCase
     setup do
       contact = contacts(:john_doe)
       contact.middle_name = 'Patrick'
-      xhr :post, :update, :id => contact, :contact => contact.attributes
+      post :update, xhr: true, params: {:id => contact, :contact => contact.attributes}
     end
 
     it("should respond with success") { assert_response :success }
@@ -45,7 +45,7 @@ class ContactsControllerTest < ActionController::TestCase
   describe "on DELETE to :destroy" do
     setup do
       @contact = contacts(:john_doe)
-      xhr :delete, :destroy, :id => @contact
+      delete :destroy, xhr: true, params: {:id => @contact}
     end
 
     it("should respond with success") { assert_response :success }
@@ -56,10 +56,10 @@ class ContactsControllerTest < ActionController::TestCase
 
   describe "on DELETE to :destroy when linked to an address" do
     setup do
-      @contact = contacts(:john_doe)
+      @contact = Contact.first
       @address = addresses(:alsip)
       @contact.update_attribute(:address, @address)
-      xhr :delete, :destroy, :id => @contact
+      delete :destroy, xhr: true, params: { :id => @contact.id }
     end
 
     it("should respond with success") { assert_response :success }
@@ -75,7 +75,7 @@ class ContactsControllerTest < ActionController::TestCase
       contact = contacts(:john_doe)
       address = addresses(:chicago)
       contact.update_attribute(:address, address)
-      xhr :post, :remove_address, :id => contact
+      post :remove_address, xhr: true, params: { :id => contact }
     end
 
     it("should respond with success") { assert_response :success }
@@ -85,7 +85,7 @@ class ContactsControllerTest < ActionController::TestCase
   end
 
   describe "on POST to :find" do
-    setup { xhr :post, :find, :last_name => 'd' }
+    setup { post :find, xhr: true, params: { :last_name => 'd' } }
 
     it("should respond with success") { assert_response :success }
     it("should render the proper template") { assert_template :find_contact }
@@ -98,23 +98,20 @@ class ContactsControllerTest < ActionController::TestCase
       contacts(:john_doe).update_attribute(:address, addresses(:chicago))
       contacts(:jane_doe).update_attribute(:address, addresses(:alsip))
       contact = contacts(:john_doe)
-      xhr :post, :update, :id => contact, :contact => contact.attributes,
-        :address_specification_type => "existing_address", :other_id => contacts(:jane_doe).id
+      post :update, xhr: true, params: { :id => contact, :contact => contact.attributes, :address_specification_type => "existing_address", :other_id => contacts(:jane_doe).id }
     end
 
     it("should respond with success") { assert_response :success }
     it("should render the proper template") { assert_template :edit_contact }
     it("should indicate the record was saved") { assert_equal true, assigns(:saved) }
     it("should set the address of the contact to the address of the other") { assert_equal addresses(:alsip), assigns(:contact).address }
-    it("should delete the old address of the contact") { assert_nil Address.find_by_id(addresses(:chicago)) }
+    it("should have deleted  the old address of the contact") { assert_nil Address.find_by_id(addresses(:chicago)) }
   end
 
   describe "on POST to :update to assign a new address to an existing contact" do
     setup do
-      contact = contacts(:john_doe)
-      xhr :post, :update, :id => contact.id, :contact => contact.attributes,
-        :address_specification_type => "specified_address", :address => {
-          :address1 => "9909 South St.", :address2 => "Apt 2", :city => "Chicago", :state => "IL", :zip => "60606", :home_phone => '1-312-222-1221'}
+      contact = Contact.first
+      post :update, xhr: true, params: { :id => contact.id, :contact => contact.attributes, :address_specification_type => "specified_address", :address => { :address1 => "9909 South St.", :address2 => "Apt 2", :city => "Chicago", :state => "IL", :zip => "60606", :home_phone => '1-312-222-1221'} }
     end
 
     it("should respond with success") { assert_response :success }
@@ -133,9 +130,7 @@ class ContactsControllerTest < ActionController::TestCase
   describe "on POST to :update to assign a bogus adress to an existing contact" do
     setup do
       contact = contacts(:john_doe)
-      xhr :post, :update, :id => contact, :contact => contact.attributes,
-        :address_specification_type => "specified_address", :address => {
-          :address1 => "9909 South St.", :city => "", :state => "Don't know", :zip => "lkjasdflkj"}
+      post :update, xhr: true, params: { :id => contact, :contact => contact.attributes, :address_specification_type => "specified_address", :address => { :address1 => "9909 South St.", :city => "", :state => "Don't know", :zip => "lkjasdflkj"} }
     end
 
     it("should respond with success") { assert_response :success }
@@ -149,8 +144,7 @@ class ContactsControllerTest < ActionController::TestCase
     setup do
       contacts(:jane_doe).update_attribute(:address, addresses(:alsip))
       contact = contacts(:john_doe)
-      xhr :post, :create, :contact => contact.attributes,
-        :address_specification_type => "existing_address", :other_id => contacts(:jane_doe)
+      post :create, xhr: true, params: { :contact => contact.attributes, :address_specification_type => "existing_address", :other_id => contacts(:jane_doe) }
     end
 
     it("should respond with success") { assert_response :success }
@@ -162,9 +156,7 @@ class ContactsControllerTest < ActionController::TestCase
   describe "on POST to :create to create a new contact with a specified address" do
     setup do
       contact = contacts(:john_doe)
-      xhr :post, :create, :contact => contact.attributes,
-        :address_specification_type => "specified_address", :address => {
-          :address1 => "9909 South St.", :address2 => "Apt 2", :city => "Chicago", :state => "IL", :zip => "60606", :home_phone => "312-222-1221" }
+      post :create, xhr: true, params: { :contact => contact.attributes, :address_specification_type => "specified_address", :address => { :address1 => "9909 South St.", :address2 => "Apt 2", :city => "Chicago", :state => "IL", :zip => "60606", :home_phone => "312-222-1221" } } 
     end
 
     it("should respond with success") { assert_response :success }
@@ -181,7 +173,7 @@ class ContactsControllerTest < ActionController::TestCase
   end
 
   describe "on POST to :create to create a contact with no address" do
-    setup { xhr :post, :create, :contact => contacts(:john_doe).attributes }
+    setup { post :create, xhr: true, param: { :contact => contacts(:john_doe).attributes } }
 
     it("should respond with success") { assert_response :success }
     it("should render the proper template") { assert_template :edit_contact }
@@ -193,8 +185,7 @@ class ContactsControllerTest < ActionController::TestCase
   describe "on POST to :create to create a contact with only a home phone number, and no address" do
     setup do
       contact = contacts(:john_doe)
-      xhr :post, :create, :id => contact, :contact => contact.attributes,
-        :address => { :home_phone => '555-232-2323', :address1 => '', :city => '', :state => '', :zip => '' }
+      post :create,  xhr: true, params: { :id => contact, :contact => contact.attributes, :address => { :home_phone => '555-232-2323', :address1 => '', :city => '', :state => '', :zip => '' } }
     end
 
     it("should respond with success") { assert_response :success }
@@ -210,9 +201,9 @@ class ContactsControllerTest < ActionController::TestCase
       assert(addresses(:alsip).contacts.include?(contacts(:john_doe)))
 
       contact = contacts(:john_doe)
-      xhr :post, :update, :id => contact, :contact => contact.attributes,
+      post :update, xhr: true, params: {:id => contact, :contact => contact.attributes,
         :address_specification_type => "specified_address", :address => {
-          :address1 => "123 Main St", :city => "Chicago", :state => "IL", :zip => "60606"}
+          :address1 => "123 Main St", :city => "Chicago", :state => "IL", :zip => "60606"}}
     end
 
     it("should respond with success") { assert_response :success }
@@ -228,9 +219,9 @@ class ContactsControllerTest < ActionController::TestCase
       contacts(:jane_doe).update_attribute(:address, addresses(:alsip))
 
       contact = contacts(:john_doe)
-      xhr :post, :update, :id => contact, :contact => contact.attributes,
+      post :update, xhr: true, params: {:id => contact, :contact => contact.attributes,
         :address_specification_type => "specified_address", :address => {
-          :address1 => "123 Main St", :city => "Chicago", :state => "IL", :zip => "60606"}
+          :address1 => "123 Main St", :city => "Chicago", :state => "IL", :zip => "60606"}}
     end
 
     it("should respond with success") { assert_response :success }
@@ -253,7 +244,7 @@ class ContactsControllerTest < ActionController::TestCase
       address.update_attribute(:city, 'Chicago')
       session[:changed_address] = address.to_json
 
-      xhr :post, :change_address, { :id => contacts(:john_doe), :submit_id => 'yes' }
+      post :change_address, xhr: true, params: { :id => contacts(:john_doe), :submit_id => 'yes' }
     end
 
     it("should respond with success") { assert_response :success }
@@ -267,14 +258,15 @@ class ContactsControllerTest < ActionController::TestCase
 
   describe "on POST to :change_address for an address change that should only be performed on a single contact" do
     setup do
-      contacts(:john_doe).update_attribute(:address, addresses(:alsip))
-      contacts(:jane_doe).update_attribute(:address, addresses(:alsip))
+      @contact = Contact.first
+      @contact.update_attribute(:address, addresses(:alsip))
+      @contact.update_attribute(:address, addresses(:alsip))
 
       address = addresses(:alsip)
       address.update_attribute(:city, 'Chicago')
       session[:changed_address] = address.to_json
 
-      xhr :post, :change_address, { :id => contacts(:john_doe), :submit_id => 'no' }
+      post :change_address, xhr: true, params: { :id => @contact, :submit_id => 'no' }
     end
 
     it("should respond with success") { assert_response :success }

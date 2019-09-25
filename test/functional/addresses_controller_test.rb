@@ -26,7 +26,7 @@ class AddressesControllerTest < ActionController::TestCase
       @address.address_type = address_types(:individual)
       @address.address2 = 'Apt 109'
 
-      xhr :put, :update, :id => @address, :address => @address.attributes
+      put :update, xhr: true, :id => @address, :address => @address.attributes
     end
 
     it("should respond with success") { assert_response :success }

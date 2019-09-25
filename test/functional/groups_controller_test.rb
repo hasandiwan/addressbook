@@ -22,7 +22,7 @@ class GroupsControllerTest < ActionController::TestCase
   end
 
   describe "on GET to :show" do
-    before { xhr :get, :show, :id => groups(:group_1) }
+    before { get :show, xhr: true, :id => groups(:group_1) }
 
     it("should respond with success") { assert_response :success }
     it("should render the proper template") { assert_template :edit_group }

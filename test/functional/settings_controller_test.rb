@@ -57,7 +57,7 @@ class SettingsControllerTest < ActionController::TestCase
     before do
       Settings.username = 'bobby'
       Settings.password = 'pass'
-      xhr :get, :edit_login_credentials
+      get :edit_login_credentials, xhr:true 
     end
 
     it("should respond with success") { assert_response :success }
@@ -77,7 +77,7 @@ class SettingsControllerTest < ActionController::TestCase
   end
 
   describe "on PUT to :update_login_credentials with a non matching password and password confirmation" do
-    before { xhr :put, :update_login_credentials, :username => 'bob', :password => 'mypass', :password_confirmation => 'notmypass' }
+    before { put :update_login_credentials, xhr: true, :username => 'bob', :password => 'mypass', :password_confirmation => 'notmypass' }
 
     it("should respond with success") { assert_response :success }
     it("should render the proper template") { assert_template :login_credentials }
@@ -114,7 +114,7 @@ class SettingsControllerTest < ActionController::TestCase
     before do
       Settings.username = 'bobby'
       Settings.password = 'pass'
-      xhr :put, :update_login_credentials, :username => 'bob', :password => 'mypass', :password_confirmation => 'mypass', :current_password => 'wrong_pass'
+      put :update_login_credentials, xhr: true, :username => 'bob', :password => 'mypass', :password_confirmation => 'mypass', :current_password => 'wrong_pass'
     end
 
     it("should respond with success") { assert_response :success }
@@ -130,7 +130,7 @@ class SettingsControllerTest < ActionController::TestCase
     before do
       Settings.username = 'bob'
       Settings.password = 'mypass'
-      xhr :put, :update_login_credentials, :username => '', :password => '', :password_confirmation => '', :current_password => 'mypass'
+      put :update_login_credentials, xhr: true, :username => '', :password => '', :password_confirmation => '', :current_password => 'mypass'
     end
 
     it("should respond with success") { assert_response :success }
