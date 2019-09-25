@@ -28,7 +28,7 @@ class MainControllerTest < ActionController::TestCase
   describe "on GET to :use_mobile_view" do
     before { get :use_mobile_view }
 
-    it("should redirect to the root url") { assert_redirected_to(root_url) }
+    it("should redirect to the root url") { assert_redirected_to('/users/sign_in') }
     it("should set the session to indicate we're using a mobile view") { assert_equal true, session[:mobile_view] }
   end
 
@@ -47,7 +47,7 @@ class MainControllerTest < ActionController::TestCase
         Rails.env = 'test'
       end
 
-      it("should respond with success") { assert_response :success }
+      it("should respond with unauthorized") { assert_response :unauthorized }
       it("should render the proper template") { assert_template :index }
     end
 
