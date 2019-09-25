@@ -1,6 +1,6 @@
 class ContactsController < ApplicationController
 
-  before_filter :load_contact, :except => [:new, :create, :find]
+  before_action :load_contact, :except => [:new, :create, :find]
 
   def new
     @contact = Contact.new

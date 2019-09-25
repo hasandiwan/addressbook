@@ -31,9 +31,9 @@ module ActionController
         include ActionController::MobileFu::InstanceMethods
 
         if test_mode
-          before_filter :force_mobile_format
+          before_action :force_mobile_format
         else
-          before_filter :set_mobile_format
+          before_action :set_mobile_format
         end
 
         helper_method :is_mobile_device?

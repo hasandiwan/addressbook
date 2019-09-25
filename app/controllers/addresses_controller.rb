@@ -1,6 +1,6 @@
 class AddressesController < ApplicationController
 
-  before_filter :load_address
+  before_action :load_address
 
   def create
     # call remote webserver or libsbook wrapper

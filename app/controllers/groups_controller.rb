@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
 
-  before_filter :load_group, :except => [:new, :create]
+  before_action :load_group, :except => [:new, :create]
 
   def new
     @group = Group.new
