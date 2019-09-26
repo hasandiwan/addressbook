@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '5.1.2'
+gem 'rails', '5.1.3'
 gem 'pg', '0.20'
 
 gem 'prawn-labels'
